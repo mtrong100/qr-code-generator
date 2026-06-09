@@ -717,6 +717,9 @@ body {
   transform: scale(1.01);
 }
 
+/* Fix hidden attribute on flex/block elements */
+[hidden] { display: none !important; }
+
 .logo-upload__inner {
   padding: 1.25rem;
   display: flex;
@@ -947,8 +950,6 @@ body {
 }
 
 /* ── 18. PWA Banner ─────────────────────────────────────────────── */
-.pwa-banner[hidden] { display: none !important; }
-
 .pwa-banner {
   position: fixed;
   bottom: 1.5rem;

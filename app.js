@@ -383,9 +383,9 @@
     if (typeof QRCode === 'undefined') {
       throw new Error('QRCode library not loaded');
     }
+
     const opts = {
       width: STATE.size,
-      height: STATE.size,
       margin: 1,
       color: {
         dark: STATE.fg,
@@ -394,7 +394,22 @@
       errorCorrectionLevel: STATE.ecc,
     };
 
-    await QRCode.toCanvas(qrCanvas, data, opts);
+    // Use toDataURL → draw onto canvas (works reliably in all browsers)
+    const dataUrl = await QRCode.toDataURL(data, opts);
+
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        qrCanvas.width  = STATE.size;
+        qrCanvas.height = STATE.size;
+        const ctx = qrCanvas.getContext('2d');
+        ctx.clearRect(0, 0, STATE.size, STATE.size);
+        ctx.drawImage(img, 0, 0, STATE.size, STATE.size);
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = dataUrl;
+    });
 
     // Overlay logo if present
     if (STATE.logo) {
@@ -451,9 +466,10 @@
       link.download = 'qrcode.svg';
       link.href = url;
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
       showSnack(t('snackDownloaded') + ' SVG');
-    } catch (_) {
+    } catch (err) {
+      console.error(err);
       showSnack(t('snackError'));
     }
   });
