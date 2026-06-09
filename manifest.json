@@ -1,0 +1,41 @@
+{
+  "name": "QR Code Generator – Tạo Mã QR Miễn Phí",
+  "short_name": "QR Generator",
+  "description": "Generate free QR codes for URLs, text, contact, WiFi and more.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#6750A4",
+  "background_color": "#FFFBFE",
+  "categories": ["utilities", "productivity"],
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Tạo QR từ URL",
+      "short_name": "QR URL",
+      "description": "Tạo mã QR từ URL",
+      "url": "./?type=url",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

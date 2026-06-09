@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="system">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator – Tạo Mã QR Miễn Phí</title>
+  <meta name="description" content="Generate free QR codes for URLs, text, contact, WiFi and more. Customize colors, size, and add logos." />
+  <meta name="theme-color" content="#6750A4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#D0BCFF" media="(prefers-color-scheme: dark)" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+
+  <!-- Font: Noto Sans for Vietnamese support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- QR Code library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Skip link -->
+<a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+
+<!-- App Bar -->
+<header class="app-bar" role="banner">
+  <div class="app-bar__inner">
+    <div class="app-bar__leading">
+      <div class="app-logo" aria-hidden="true">
+        <span class="material-symbols-rounded">qr_code_2</span>
+      </div>
+      <div class="app-bar__titles">
+        <h1 class="app-bar__title" data-i18n="appTitle">QR Generator</h1>
+        <p class="app-bar__subtitle" data-i18n="appSubtitle">Tạo mã QR miễn phí</p>
+      </div>
+    </div>
+    <div class="app-bar__actions">
+      <!-- Language toggle -->
+      <button class="icon-btn" id="langToggle" aria-label="Switch language" title="Đổi ngôn ngữ">
+        <span class="material-symbols-rounded">translate</span>
+      </button>
+      <!-- Theme toggle -->
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Đổi giao diện">
+        <span class="material-symbols-rounded" id="themeIcon">light_mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main -->
+<main id="main" class="main-content">
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="heroHeading">
+      <h2 id="heroHeading" class="hero__title" data-i18n="heroTitle">Tạo Mã QR Ngay</h2>
+      <p class="hero__desc" data-i18n="heroDesc">Tạo mã QR miễn phí cho URL, văn bản, liên hệ, WiFi và nhiều hơn nữa. Tùy chỉnh màu sắc, kích thước và thêm logo.</p>
+    </section>
+
+    <!-- Type tabs -->
+    <section class="card section-card" aria-labelledby="typeLabel">
+      <h3 class="section-label" id="typeLabel">
+        <span class="material-symbols-rounded">category</span>
+        <span data-i18n="qrType">Loại mã QR</span>
+      </h3>
+      <div class="type-tabs" role="tablist" aria-label="QR Code type">
+        <button class="type-tab active" role="tab" aria-selected="true" data-type="url" id="tab-url" aria-controls="panel-url">
+          <span class="material-symbols-rounded">link</span>
+          <span data-i18n="typeUrl">URL</span>
+        </button>
+        <button class="type-tab" role="tab" aria-selected="false" data-type="text" id="tab-text" aria-controls="panel-text">
+          <span class="material-symbols-rounded">notes</span>
+          <span data-i18n="typeText">Văn bản</span>
+        </button>
+        <button class="type-tab" role="tab" aria-selected="false" data-type="email" id="tab-email" aria-controls="panel-email">
+          <span class="material-symbols-rounded">mail</span>
+          <span data-i18n="typeEmail">Email</span>
+        </button>
+        <button class="type-tab" role="tab" aria-selected="false" data-type="phone" id="tab-phone" aria-controls="panel-phone">
+          <span class="material-symbols-rounded">call</span>
+          <span data-i18n="typePhone">Điện thoại</span>
+        </button>
+        <button class="type-tab" role="tab" aria-selected="false" data-type="wifi" id="tab-wifi" aria-controls="panel-wifi">
+          <span class="material-symbols-rounded">wifi</span>
+          <span>WiFi</span>
+        </button>
+        <button class="type-tab" role="tab" aria-selected="false" data-type="vcard" id="tab-vcard" aria-controls="panel-vcard">
+          <span class="material-symbols-rounded">contact_page</span>
+          <span data-i18n="typeVcard">Liên hệ</span>
+        </button>
+      </div>
+
+      <!-- Tab panels -->
+      <div class="tab-panels">
+
+        <!-- URL -->
+        <div class="tab-panel active" id="panel-url" role="tabpanel" aria-labelledby="tab-url">
+          <div class="field">
+            <label class="field__label" for="urlInput" data-i18n="urlLabel">Địa chỉ URL</label>
+            <div class="field__input-wrap">
+              <span class="material-symbols-rounded field__icon">link</span>
+              <input type="url" id="urlInput" class="field__input" placeholder="https://example.com" autocomplete="url" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="tab-panel" id="panel-text" role="tabpanel" aria-labelledby="tab-text" hidden>
+          <div class="field">
+            <label class="field__label" for="textInput" data-i18n="textLabel">Nội dung văn bản</label>
+            <textarea id="textInput" class="field__input field__textarea" placeholder="Nhập văn bản..." rows="4" data-i18n-placeholder="textPlaceholder"></textarea>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="tab-panel" id="panel-email" role="tabpanel" aria-labelledby="tab-email" hidden>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field__label" for="emailAddr" data-i18n="emailAddrLabel">Địa chỉ email</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">mail</span>
+                <input type="email" id="emailAddr" class="field__input" placeholder="example@email.com" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="emailSubject" data-i18n="emailSubjectLabel">Tiêu đề</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">subject</span>
+                <input type="text" id="emailSubject" class="field__input" placeholder="Tiêu đề email" data-i18n-placeholder="emailSubjectPlaceholder" />
+              </div>
+            </div>
+            <div class="field field--full">
+              <label class="field__label" for="emailBody" data-i18n="emailBodyLabel">Nội dung</label>
+              <textarea id="emailBody" class="field__input field__textarea" rows="3" placeholder="Nội dung email..." data-i18n-placeholder="emailBodyPlaceholder"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="tab-panel" id="panel-phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+          <div class="field">
+            <label class="field__label" for="phoneInput" data-i18n="phoneLabel">Số điện thoại</label>
+            <div class="field__input-wrap">
+              <span class="material-symbols-rounded field__icon">call</span>
+              <input type="tel" id="phoneInput" class="field__input" placeholder="+84 xxx xxx xxx" />
+            </div>
+          </div>
+        </div>
+
+        <!-- WiFi -->
+        <div class="tab-panel" id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" hidden>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field__label" for="wifiSsid">SSID <span data-i18n="wifiSsidHint">(Tên mạng)</span></label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">wifi</span>
+                <input type="text" id="wifiSsid" class="field__input" placeholder="Tên WiFi" data-i18n-placeholder="wifiSsidPlaceholder" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="wifiPassword" data-i18n="wifiPasswordLabel">Mật khẩu</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">lock</span>
+                <input type="password" id="wifiPassword" class="field__input" placeholder="Mật khẩu WiFi" data-i18n-placeholder="wifiPasswordPlaceholder" />
+                <button class="field__btn-eye" id="togglePassword" type="button" aria-label="Toggle password visibility">
+                  <span class="material-symbols-rounded">visibility</span>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="wifiEncryption" data-i18n="wifiEncryptionLabel">Mã hóa</label>
+              <div class="field__input-wrap field__input-wrap--select">
+                <span class="material-symbols-rounded field__icon">security</span>
+                <select id="wifiEncryption" class="field__input field__select">
+                  <option value="WPA">WPA/WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="">None</option>
+                </select>
+                <span class="material-symbols-rounded field__select-arrow">expand_more</span>
+              </div>
+            </div>
+            <div class="field field--checkbox">
+              <label class="checkbox-label">
+                <input type="checkbox" id="wifiHidden" class="checkbox-input" />
+                <span class="checkbox-custom"></span>
+                <span class="checkbox-text" data-i18n="wifiHiddenLabel">Mạng ẩn</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- vCard -->
+        <div class="tab-panel" id="panel-vcard" role="tabpanel" aria-labelledby="tab-vcard" hidden>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field__label" for="vcardFirst" data-i18n="vcardFirstLabel">Họ</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">person</span>
+                <input type="text" id="vcardFirst" class="field__input" placeholder="Nguyễn" data-i18n-placeholder="vcardFirstPlaceholder" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="vcardLast" data-i18n="vcardLastLabel">Tên</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">person</span>
+                <input type="text" id="vcardLast" class="field__input" placeholder="Văn A" data-i18n-placeholder="vcardLastPlaceholder" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="vcardPhone" data-i18n="vcardPhoneLabel">Điện thoại</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">call</span>
+                <input type="tel" id="vcardPhone" class="field__input" placeholder="+84 xxx xxx xxx" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="vcardEmail" data-i18n="vcardEmailLabel">Email</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">mail</span>
+                <input type="email" id="vcardEmail" class="field__input" placeholder="example@email.com" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="vcardOrg" data-i18n="vcardOrgLabel">Tổ chức</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">business</span>
+                <input type="text" id="vcardOrg" class="field__input" placeholder="Tên công ty" data-i18n-placeholder="vcardOrgPlaceholder" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="vcardWebsite" data-i18n="vcardWebsiteLabel">Website</label>
+              <div class="field__input-wrap">
+                <span class="material-symbols-rounded field__icon">language</span>
+                <input type="url" id="vcardWebsite" class="field__input" placeholder="https://example.com" />
+              </div>
+            </div>
+            <div class="field field--full">
+              <label class="field__label" for="vcardAddress" data-i18n="vcardAddressLabel">Địa chỉ</label>
+              <textarea id="vcardAddress" class="field__input field__textarea" rows="2" placeholder="Địa chỉ..." data-i18n-placeholder="vcardAddressPlaceholder"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customization -->
+    <section class="card section-card" aria-labelledby="customLabel">
+      <h3 class="section-label" id="customLabel">
+        <span class="material-symbols-rounded">tune</span>
+        <span data-i18n="customTitle">Tùy chỉnh</span>
+      </h3>
+
+      <div class="custom-grid">
+        <!-- Colors -->
+        <div class="custom-group">
+          <p class="custom-group__title" data-i18n="colorsLabel">Màu sắc</p>
+          <div class="color-row">
+            <label class="color-item">
+              <span class="color-item__label" data-i18n="fgColorLabel">Màu QR</span>
+              <div class="color-item__swatch-wrap">
+                <input type="color" id="fgColor" value="#000000" class="color-picker" aria-label="Foreground color" />
+                <span class="color-item__hex" id="fgHex">#000000</span>
+              </div>
+            </label>
+            <label class="color-item">
+              <span class="color-item__label" data-i18n="bgColorLabel">Màu nền</span>
+              <div class="color-item__swatch-wrap">
+                <input type="color" id="bgColor" value="#ffffff" class="color-picker" aria-label="Background color" />
+                <span class="color-item__hex" id="bgHex">#ffffff</span>
+              </div>
+            </label>
+          </div>
+          <div class="color-presets" aria-label="Color presets">
+            <button class="preset-btn" data-fg="#000000" data-bg="#ffffff" title="Classic" style="--c1:#000;--c2:#fff;"></button>
+            <button class="preset-btn" data-fg="#6750A4" data-bg="#ffffff" title="Purple" style="--c1:#6750A4;--c2:#fff;"></button>
+            <button class="preset-btn" data-fg="#1a73e8" data-bg="#e8f0fe" title="Blue" style="--c1:#1a73e8;--c2:#e8f0fe;"></button>
+            <button class="preset-btn" data-fg="#137333" data-bg="#e6f4ea" title="Green" style="--c1:#137333;--c2:#e6f4ea;"></button>
+            <button class="preset-btn" data-fg="#c5221f" data-bg="#fce8e6" title="Red" style="--c1:#c5221f;--c2:#fce8e6;"></button>
+            <button class="preset-btn" data-fg="#e37400" data-bg="#fef3e2" title="Orange" style="--c1:#e37400;--c2:#fef3e2;"></button>
+            <button class="preset-btn" data-fg="#ffffff" data-bg="#000000" title="Inverted" style="--c1:#fff;--c2:#000;"></button>
+          </div>
+        </div>
+
+        <!-- Size -->
+        <div class="custom-group">
+          <p class="custom-group__title" data-i18n="sizeLabel">Kích thước</p>
+          <div class="slider-wrap">
+            <input type="range" id="sizeSlider" min="128" max="512" value="256" step="32" class="slider" aria-label="QR size" />
+            <span class="slider-val"><span id="sizeVal">256</span>px</span>
+          </div>
+        </div>
+
+        <!-- Error correction -->
+        <div class="custom-group">
+          <p class="custom-group__title" data-i18n="eccLabel">Mức sửa lỗi</p>
+          <div class="ecc-tabs" role="group" aria-label="Error correction level">
+            <button class="ecc-btn" data-ecc="L">L <span class="ecc-desc" data-i18n="eccL">7%</span></button>
+            <button class="ecc-btn active" data-ecc="M">M <span class="ecc-desc" data-i18n="eccM">15%</span></button>
+            <button class="ecc-btn" data-ecc="Q">Q <span class="ecc-desc" data-i18n="eccQ">25%</span></button>
+            <button class="ecc-btn" data-ecc="H">H <span class="ecc-desc" data-i18n="eccH">30%</span></button>
+          </div>
+        </div>
+
+        <!-- Logo upload -->
+        <div class="custom-group">
+          <p class="custom-group__title" data-i18n="logoLabel">Logo <span data-i18n="logoOptional">(tuỳ chọn)</span></p>
+          <div class="logo-upload" id="logoDropZone">
+            <input type="file" id="logoInput" accept="image/*" hidden aria-label="Upload logo" />
+            <div class="logo-upload__inner" id="logoUploadInner">
+              <span class="material-symbols-rounded logo-upload__icon">add_photo_alternate</span>
+              <p class="logo-upload__text" data-i18n="logoUploadText">Kéo thả hoặc nhấn để tải ảnh</p>
+              <p class="logo-upload__hint" data-i18n="logoUploadHint">PNG, JPG, SVG – tối đa 2MB</p>
+            </div>
+            <div class="logo-preview" id="logoPreview" hidden>
+              <img id="logoPreviewImg" alt="Logo preview" />
+              <button class="logo-remove" id="removeLogo" type="button" aria-label="Remove logo">
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            </div>
+          </div>
+          <!-- Logo size when uploaded -->
+          <div class="logo-size-control" id="logoSizeControl" hidden>
+            <label class="field__label" data-i18n="logoSizeLabel">Kích thước logo</label>
+            <div class="slider-wrap">
+              <input type="range" id="logoSizeSlider" min="10" max="40" value="20" step="1" class="slider" aria-label="Logo size" />
+              <span class="slider-val"><span id="logoSizeVal">20</span>%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Generate button -->
+    <div class="generate-row">
+      <button class="btn btn--primary btn--large" id="generateBtn" type="button">
+        <span class="material-symbols-rounded btn__icon">qr_code</span>
+        <span data-i18n="generateBtn">Tạo mã QR</span>
+      </button>
+    </div>
+
+    <!-- Result -->
+    <section class="card result-card" id="resultSection" aria-labelledby="resultLabel" aria-live="polite" hidden>
+      <h3 class="section-label" id="resultLabel">
+        <span class="material-symbols-rounded">check_circle</span>
+        <span data-i18n="resultTitle">Mã QR của bạn</span>
+      </h3>
+
+      <!-- Skeleton -->
+      <div class="result-skeleton" id="resultSkeleton" hidden>
+        <div class="skeleton skeleton--qr"></div>
+        <div class="skeleton-actions">
+          <div class="skeleton skeleton--btn"></div>
+          <div class="skeleton skeleton--btn"></div>
+          <div class="skeleton skeleton--btn"></div>
+        </div>
+      </div>
+
+      <!-- Actual result -->
+      <div class="result-body" id="resultBody" hidden>
+        <div class="qr-canvas-wrap">
+          <canvas id="qrCanvas" aria-label="Generated QR code"></canvas>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn--tonal" id="downloadPng" type="button">
+            <span class="material-symbols-rounded btn__icon">download</span>
+            <span>PNG</span>
+          </button>
+          <button class="btn btn--tonal" id="downloadSvg" type="button">
+            <span class="material-symbols-rounded btn__icon">download</span>
+            <span>SVG</span>
+          </button>
+          <button class="btn btn--outlined" id="copyBtn" type="button">
+            <span class="material-symbols-rounded btn__icon">content_copy</span>
+            <span data-i18n="copyBtn">Sao chép</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+</main>
+
+<!-- Footer -->
+<footer class="footer" role="contentinfo">
+  <p class="footer__text">
+    <span data-i18n="footerText">Tạo mã QR miễn phí — </span>
+    <a href="https://github.com" class="footer__link" data-i18n="footerLink">Mã nguồn mở</a>
+  </p>
+</footer>
+
+<!-- Snackbar -->
+<div class="snackbar" id="snackbar" role="alert" aria-live="polite"></div>
+
+<!-- Install PWA Banner -->
+<div class="pwa-banner" id="pwaBanner" hidden>
+  <span class="material-symbols-rounded pwa-banner__icon">install_mobile</span>
+  <span class="pwa-banner__text" data-i18n="pwaBannerText">Cài đặt ứng dụng để dùng offline</span>
+  <button class="btn btn--tonal btn--small" id="pwaBannerInstall" data-i18n="pwaBannerInstall">Cài đặt</button>
+  <button class="icon-btn pwa-banner__close" id="pwaBannerClose" aria-label="Close">
+    <span class="material-symbols-rounded">close</span>
+  </button>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
