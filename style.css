@@ -864,6 +864,7 @@ body {
 }
 
 .qr-canvas-wrap {
+   padding: 2rem;
   display: flex;
   justify-content: center;
   canvas {
