@@ -380,6 +380,9 @@
   }
 
   async function renderQR(data) {
+    if (typeof QRCode === 'undefined') {
+      throw new Error('QRCode library not loaded');
+    }
     const opts = {
       width: STATE.size,
       height: STATE.size,

@@ -947,6 +947,8 @@ body {
 }
 
 /* ── 18. PWA Banner ─────────────────────────────────────────────── */
+.pwa-banner[hidden] { display: none !important; }
+
 .pwa-banner {
   position: fixed;
   bottom: 1.5rem;
